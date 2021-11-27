@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  everbridge.controlcenter.technicalchallenge:
+    image: ${DOCKER_REGISTRY-}everbridgecontrolcentertechnicalchallenge
+    build:
+      context: .
+      dockerfile: Everbridge.ControlCenter.TechnicalChallenge/Dockerfile
+      target: final
+      args:
+        buildConfiguration: release
+    ports:
+      - "12443:443"
+    expose:  
+      - 443
+    depends_on:
+      - sqlserverService
+
+  sqlserverService:  
+    image: mcr.microsoft.com/mssql/server:2019-latest  
+    hostname: 'sqlserver'  
+    environment:  
+      ACCEPT_EULA: Y  
+      SA_PASSWORD: "fake password !1234"  
+    volumes:  
+      - ./data/mssql:/var/opt/mssql3  
+    ports:  
+      - '9433:1433'  
+    expose:  
+      - 1433
